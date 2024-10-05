@@ -1,7 +1,6 @@
-# pkg install python python-pip tsu libexpat openssl -y && pip install requests psutil colorama && pkg update
-# cd /sdcard/download && python cookiechecker.py
 import os
 import requests
+import json
 from colorama import Fore, init
 
 def set_console_title(title):
@@ -10,7 +9,6 @@ def set_console_title(title):
     else:  
         print(f'\033]0;{title}\007', end='', flush=True)
 
-# Set console title
 set_console_title('Cookie Checker')
 
 init(autoreset=True)
@@ -58,7 +56,7 @@ def check_cookie_validity(cookie):
         return False
 
 def check_cookies_from_file(file_path):
-    folder_name = "Cookies Checked"
+    folder_name = "Cookies Storage"
     if not os.path.exists(folder_name):
         os.makedirs(folder_name)
     
@@ -66,10 +64,10 @@ def check_cookies_from_file(file_path):
     dead_file_path = os.path.join(folder_name, 'dead.txt')
     
     if not os.path.exists(file_path):
-        print(f"{Fore.YELLOW}File {file_path} doesn't exist. Creating one...")
+        print(f"{Fore.RED}File {file_path} doesn't exist . Creating one...")
         with open(file_path, 'w') as file:
-            file.write("") 
-        print(f"{Fore.GREEN}Created {file_path}. Add cookies in it with 'username:password:cookie' format and try again!")
+            file.write("")
+        print(f"{Fore.GREEN}Created {file_path} . Add cookies in it with 'username:password:cookie' format and try again !")
         return
     
     with open(file_path, 'r') as file:
@@ -104,9 +102,9 @@ def check_cookies_from_file(file_path):
             print(f"{Fore.RED}Invalid format in line {idx}. Expected format 'username:password:cookie'.")
     
     print(f"--------------------------------------------------")
-    print(f"\n{Fore.CYAN}Total Cookies: {total_cookies}")
-    print(f"{Fore.GREEN}Live Cookies: {live_cookies}")
-    print(f"{Fore.RED}Dead Cookies: {dead_cookies}")
+    print(f"\n{Fore.CYAN}Total Cookies : {total_cookies}")
+    print(f"{Fore.GREEN}Live Cookies : {live_cookies}")
+    print(f"{Fore.RED}Dead Cookies : {dead_cookies}")
 
 def main_menu():
     clear_console()
