@@ -31,10 +31,32 @@ def print_banner():
 -------------------------------------------------------------------------------------------------
     """)
 
+def ensure_config_exists():
+    config_path = os.path.join(os.path.dirname(__file__), 'warningconfig.json')
+    
+    if not os.path.exists(config_path):
+        print(f"{Fore.RED}Config file not found . Creating config file with default configuration...")
+        
+        default_config = {
+            "webhook_url": "https://your.webhook.url",
+            "device_name": "YourDeviceName",
+            "memory_threshold_gb": 10,  
+            "check_interval_minutes": 60
+        }
+        
+        with open(config_path, 'w') as file:
+            json.dump(default_config, file, indent=4)
+        
+        print(f"{Fore.GREEN}Config file created with default configuration . Please update it ")
+        return False  
+    return True  
+
 def load_config():
     config_path = os.path.join(os.path.dirname(__file__), 'warningconfig.json')
+    
     with open(config_path, 'r') as file:
         config = json.load(file)
+    
     return config
 
 def check_memory_usage(memory_threshold_gb):
@@ -49,7 +71,7 @@ def send_warning_to_discord(webhook_url, used_memory, device_name, memory_thresh
     used_memory_gb = used_memory / (1024 * 1024 * 1024)
 
     embed = {
-        "title": f"⚠️ Memory Usage Alert on {device_name} ⚠️",
+        "title": f"⚠️ Memory Usage Alert on {device_name} | Replace Your Device If Needed ⚠️",
         "description": f"Memory usage is at **{used_memory_gb:.2f} GB**, exceeding the **{memory_threshold_gb} GB** limit.",
         "color": 15158332,  
         "fields": [
@@ -84,6 +106,9 @@ def log_memory_under_limit(device_name, used_memory):
 
 # Main function lol
 def warning_tool():
+    if not ensure_config_exists():
+        return
+
     config = load_config()  
     webhook_url = config['webhook_url']
     device_name = config['device_name']
